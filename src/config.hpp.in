@@ -1,0 +1,6 @@
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
+#cmakedefine INTERPRETER_REPLICATE_SWITCH
+
+#endif // !CONFIG_HPP

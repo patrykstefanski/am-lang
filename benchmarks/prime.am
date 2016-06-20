@@ -1,0 +1,19 @@
+fn is_prime(n) {
+    let i = 2;
+    let m = n / 2;
+    while i < m {
+        if n % i == 0 {
+            return 0;
+        }
+        i = i + 1;
+    }
+    return 1;
+}
+
+fn main() {
+    let n = 31460;
+    n = n * 10000;
+    n = n + 6869;
+    out is_prime(n);
+    return 0;
+}
