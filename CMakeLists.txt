@@ -19,7 +19,7 @@ include_directories(${PROJECT_BINARY_DIR}/src)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 if(CMAKE_CXX_COMPILER_ID MATCHES Clang OR CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++1y -Wall -Wextra -fno-exceptions -fno-rtti -fno-stack-protector)
+    target_compile_options(${PROJECT_NAME} PRIVATE -std=c++1z -Wall -Wextra -fno-exceptions -fno-rtti -fno-stack-protector)
 endif()
 
 if(LINK_TIME_OPTIMIZATION AND (CMAKE_CXX_COMPILER_ID MATCHES Clang OR CMAKE_COMPILER_IS_GNUCXX))
