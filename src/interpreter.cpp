@@ -64,7 +64,7 @@ void interpret_divrr(const Instruction*& ip, std::int64_t* const& regs) {
 }
 
 void interpret_modrr(const Instruction*& ip, std::int64_t* const& regs) {
-    regs[ip->a()] = regs[ip->b()] + regs[ip->c()];
+    regs[ip->a()] = regs[ip->b()] % regs[ip->c()];
     ++ip;
 }
 
@@ -89,7 +89,7 @@ void interpret_divri(const Instruction*& ip, std::int64_t* const& regs) {
 }
 
 void interpret_modri(const Instruction*& ip, std::int64_t* const& regs) {
-    regs[ip->a()] = regs[ip->b()] + static_cast<std::int8_t>(ip->c());
+    regs[ip->a()] = regs[ip->b()] % static_cast<std::int8_t>(ip->c());
     ++ip;
 }
 
@@ -114,7 +114,7 @@ void interpret_divir(const Instruction*& ip, std::int64_t* const& regs) {
 }
 
 void interpret_modir(const Instruction*& ip, std::int64_t* const& regs) {
-    regs[ip->a()] = static_cast<std::int8_t>(ip->b()) + regs[ip->c()];
+    regs[ip->a()] = static_cast<std::int8_t>(ip->b()) % regs[ip->c()];
     ++ip;
 }
 
