@@ -5,8 +5,6 @@
 #include <cstdio>
 #include "cxx_extensions.hpp"
 
-// FIXME: Big endian.
-
 class Instruction final {
 public:
     enum Opcode : std::uint8_t {
@@ -55,76 +53,67 @@ public:
         OUT,   // printf("%lli\n", a);
     };
 
-    constexpr Instruction() : data_(0) {}
-    constexpr explicit Instruction(std::uint32_t data) : data_(data) {}
+    
+    constexpr Instruction() : opcode_(ADDRR), a_(0), d_(0) {}
     constexpr Instruction(const Instruction&) = default;
     constexpr Instruction& operator=(const Instruction&) = default;
 
     constexpr Opcode opcode() const {
-        return static_cast<Opcode>(data_ & 0xff);
+        return opcode_;
     }
 
     constexpr void set_opcode(Opcode opcode) {
-        reinterpret_cast<std::uint8_t*>(&data_)[0] =
-            static_cast<std::uint8_t>(opcode);
+        opcode_ = opcode;
     }
 
     constexpr std::uint8_t a() const {
-        return data_ >> 8;
+        return a_;
     }
 
     constexpr void set_a(std::uint8_t a) {
-        reinterpret_cast<std::uint8_t*>(&data_)[1] = a;
+        a_ = a;
     }
 
     constexpr std::uint8_t b() const {
-        return data_ >> 16;
+        return bc_.b_;
     }
 
     constexpr void set_b(std::uint8_t b) {
-        reinterpret_cast<std::uint8_t*>(&data_)[2] = b;
+        bc_.b_ = b;
     }
 
     constexpr std::uint8_t c() const {
-        return data_ >> 24;
+        return bc_.c_;
     }
 
     constexpr void set_c(std::uint8_t c) {
-        reinterpret_cast<std::uint8_t*>(&data_)[3] = c;
+        bc_.c_ = c;
     }
 
     constexpr std::int16_t d() const {
-        return data_ >> 16;
+        return d_;
     }
 
     constexpr void set_d(std::int16_t d) {
-        reinterpret_cast<std::int16_t*>(&data_)[1] = d;
-    }
-
-    constexpr std::uint32_t data() const {
-        return data_;
-    }
-
-    constexpr void set_data(std::uint32_t data) {
-        data_ = data;
+        d_ = d;
     }
 
     constexpr static Instruction make_abc(Opcode opcode, std::uint8_t a,
             std::uint8_t b, std::uint8_t c) {
         Instruction instruction;
-        instruction.set_opcode(opcode);
-        instruction.set_a(a);
-        instruction.set_b(b);
-        instruction.set_c(c);
+        instruction.opcode_ = opcode;
+        instruction.a_ = a;
+        instruction.bc_.b_ = b;
+        instruction.bc_.c_ = c;
         return instruction;
     }
 
     constexpr static Instruction make_ad(Opcode opcode, std::uint8_t a,
             std::uint16_t d) {
         Instruction instruction;
-        instruction.set_opcode(opcode);
-        instruction.set_a(a);
-        instruction.set_d(d);
+        instruction.opcode_ = opcode;
+        instruction.a_ = a;
+        instruction.d_ = d;
         return instruction;
     }
 
@@ -132,7 +121,17 @@ public:
     COLD void print(std::FILE* file) const;
 
 private:
-    std::uint32_t data_;
+    Opcode opcode_;
+    std::uint8_t a_;
+    union {
+        struct {
+            std::uint8_t b_;
+            std::uint8_t c_;
+        } bc_;
+        std::int16_t d_;
+    };
 };
+
+static_assert(sizeof(Instruction) == sizeof(std::uint32_t));
 
 #endif // !INSTRUCTION_HPP
