@@ -53,8 +53,9 @@ public:
         OUT,   // printf("%lli\n", a);
     };
 
-    
-    constexpr Instruction() : opcode_(ADDRR), a_(0), d_(0) {}
+    // Make a NOP instruction.
+    constexpr Instruction() : opcode_(ADDRI), a_(0), bc_({ 0, 0 }) {}
+
     constexpr Instruction(const Instruction&) = default;
     constexpr Instruction& operator=(const Instruction&) = default;
 
