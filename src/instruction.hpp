@@ -8,6 +8,8 @@
 class Instruction final {
 public:
     enum Opcode : std::uint8_t {
+        // Const instruction.
+        CONST, // a <- constants[$d]
         // Commutative binary instructions.
         ADDRR, // a <- b + c
         MULRR, // a <- b * c

@@ -18,6 +18,7 @@ public:
     void parse();
 
     const std::vector<Instruction>& bytecode() const;
+    const std::vector<std::int64_t>& constants() const;
 
 private:
     enum Operator {
@@ -273,6 +274,7 @@ private:
         functions_;
     Lexer lexer_;
     std::vector<Instruction> bytecode_;
+    std::vector<std::int64_t> constants_;
     Scope* current_scope_;
 };
 

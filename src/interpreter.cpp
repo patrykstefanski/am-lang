@@ -9,6 +9,15 @@
 
 namespace {
 
+// Const instruction.
+
+void interpret_const(const Instruction*& ip, const std::int64_t* consts,
+        std::int64_t* const& regs) {
+    std::size_t index = static_cast<std::uint16_t>(ip->d());
+    regs[ip->a()] = consts[index];
+    ++ip;
+}
+
 // Commutative binary instructions.
 
 void interpret_addrr(const Instruction*& ip, std::int64_t* const& regs) {
@@ -241,6 +250,8 @@ extern int trace_flag;
 #define NEXT do {                                    \
     TRACE;                                           \
     switch (ip->opcode()) {                          \
+    /* Const instruction. */                         \
+    case Instruction::CONST: goto instruction_const; \
     /* Commutative binary instructions. */           \
     case Instruction::ADDRR: goto instruction_addrr; \
     case Instruction::MULRR: goto instruction_mulrr; \
@@ -288,11 +299,17 @@ extern int trace_flag;
     }                                                \
 } while (0)
 
-int interpret(const std::vector<Instruction>& bytecode) {
+int interpret(const std::vector<Instruction>& bytecode,
+        const std::vector<std::int64_t>& constants) {
     std::vector<std::int64_t> memory(
             INTERPRETER_MEMORY_SIZE / sizeof(std::int64_t));
     std::int64_t* regs = memory.data();
     const auto* ip = bytecode.data();
+    const std::int64_t* consts = constants.data();
+    NEXT;
+// Const instruction.
+instruction_const:
+    interpret_const(ip, consts, regs);
     NEXT;
 // Commutative binary instructions.
 instruction_addrr:
@@ -415,14 +432,20 @@ instruction_out:
 
 #else // !INTERPRETER_REPLICATE_SWITCH
 
-int interpret(const std::vector<Instruction>& bytecode) {
+int interpret(const std::vector<Instruction>& bytecode,
+        const std::vector<std::int64_t>& constants) {
     std::vector<std::int64_t> memory(
             INTERPRETER_MEMORY_SIZE / sizeof(std::int64_t));
     std::int64_t* regs = memory.data();
     const auto* ip = bytecode.data();
+    const std::int64_t* consts = constants.data();
     for (;;) {
         TRACE;
         switch (ip->opcode()) {
+        // Const instruction.
+        case Instruction::CONST:
+            interpret_const(ip, consts, regs);
+            break;
         // Commutative binary instructions.
         case Instruction::ADDRR:
             interpret_addrr(ip, regs);

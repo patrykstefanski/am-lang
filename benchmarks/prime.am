@@ -11,9 +11,6 @@ fn is_prime(n) {
 }
 
 fn main() {
-    let n = 31460;
-    n = n * 10000;
-    n = n + 6869;
-    out is_prime(n);
+    out is_prime(314606869);
     return 0;
 }

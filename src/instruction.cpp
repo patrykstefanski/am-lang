@@ -5,6 +5,10 @@
 
 void Instruction::print(std::FILE* file) const {
     switch (opcode()) {
+    // Const instruction.
+    case Instruction::CONST:
+        std::fprintf(file, "const %u, $%d", a(), d());
+        break;
     // Commutative binary instructions.
     case Instruction::ADDRR:
         std::fprintf(file, "addrr %u, %u, %u", a(), b(), c());

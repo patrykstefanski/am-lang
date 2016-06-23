@@ -1,5 +1,4 @@
 #include "parser.hpp"
-#include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -16,6 +15,10 @@ const std::vector<Instruction>& Parser::bytecode() const {
     return bytecode_;
 }
 
+const std::vector<std::int64_t>& Parser::constants() const {
+    return constants_;
+}
+
 std::size_t Parser::find_variable_reg(std::size_t symbol_id) const {
     std::size_t i = current_scope_->num_variables_;
     while (LIKELY(i-- != 0)) {
@@ -29,15 +32,17 @@ std::size_t Parser::find_variable_reg(std::size_t symbol_id) const {
 Parser::Expression Parser::expr_to_reg(Parser::Expression expr,
         std::uint8_t reg) {
     if (!expr.has_reg()) {
-        // FIXME: Maybe implement big constants as combination of add/mul
-        // instructions.
         if (UNLIKELY(expr.value() < std::numeric_limits<std::int16_t>::min() ||
                     expr.value() > std::numeric_limits<std::int16_t>::max())) {
-            std::fputs("Error: constant too big\n", stderr);
-            std::exit(EXIT_FAILURE);
+            std::size_t index = constants_.size();
+            ASSERT_LE(index, std::numeric_limits<std::uint16_t>::max());
+            constants_.push_back(expr.value());
+            bytecode_.push_back(Instruction::make_ad(Instruction::CONST,
+                        reg, index));
+        } else {
+            bytecode_.push_back(Instruction::make_ad(Instruction::MOVI,
+                        reg, expr.value()));
         }
-        bytecode_.push_back(Instruction::make_ad(Instruction::MOVI,
-                    reg, expr.value()));
     } else if (expr.reg() != reg) {
         bytecode_.push_back(Instruction::make_abc(Instruction::MOVR,
                     reg, expr.reg(), 0));

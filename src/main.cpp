@@ -91,5 +91,5 @@ int main(int argc, char** argv) {
         return EXIT_SUCCESS;
     }
     // Execute.
-    return interpret(parser.bytecode());
+    return interpret(parser.bytecode(), parser.constants());
 }
