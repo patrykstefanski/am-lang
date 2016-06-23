@@ -49,8 +49,8 @@ public:
         RETI,  // return $d
         // System instructions.
         EXIT,  // exit(a)
-        IN,    // scanf("%lli", &a);
-        OUT,   // printf("%lli\n", a);
+        IN,    // scanf("%" PRId64, &a);
+        OUT,   // printf("%" PRId64 "\n", a);
     };
 
     // Make a NOP instruction.
