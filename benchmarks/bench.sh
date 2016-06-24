@@ -9,7 +9,7 @@ TIME=/usr/bin/time # Use the time binary, not a shell builtin
 usage() {
     echo "$0 [LANG] [TESTCASE] [NUM]"
     echo
-    echo "Available languages: am-lang, c, java, java-int (for interpreted java), php, python"
+    echo "Available languages: am-lang, c, java, java-int (for interpreted java), lua, luajit, php, python"
     echo "Available test cases: ackermann, fibonacci, prime"
     echo "Example:"
     echo "Run the ackermann test for am-lang 5 times"
@@ -17,7 +17,7 @@ usage() {
     exit 1
 }
 
-if [[ ! " am-lang c java java-int php python " =~ " $1 " ]]; then
+if [[ ! " am-lang c java java-int lua luajit php python " =~ " $1 " ]]; then
     usage
 fi
 
@@ -48,6 +48,12 @@ case $1 in
     "java-int")
         exe javac -d $TMPDIR "$SRCDIR/$2.java"
         CMD="java -Xint -cp $TMPDIR $2"
+        ;;
+    "lua")
+        CMD="lua $SRCDIR/$2.lua"
+        ;;
+    "luajit")
+        CMD="luajit $SRCDIR/$2.lua"
         ;;
     "php")
         CMD="php -f $SRCDIR/$2.php"
