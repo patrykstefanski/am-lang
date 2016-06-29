@@ -1,7 +1,12 @@
 function is_prime (n)
+    if n < 2 then
+        return 0
+    end
+    if n == 2 then
+        return 1
+    end
     local i = 2
-    local m = n / 2
-    while i < m do
+    while i < n do
         if n % i == 0 then
             return 0
         end

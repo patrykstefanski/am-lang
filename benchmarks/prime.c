@@ -3,9 +3,14 @@
 #include <stdio.h>
 
 int64_t is_prime(int64_t n) {
+    if (n < 2) {
+        return 0;
+    }
+    if (n == 2) {
+        return 1;
+    }
     int64_t i = 2;
-    int64_t m = n / 2;
-    while (i < m) {
+    while (i < n) {
         if (n % i == 0) {
             return 0;
         }

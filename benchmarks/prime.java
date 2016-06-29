@@ -1,8 +1,13 @@
 public class prime {
     private static long isPrime(long n) {
+        if (n < 2) {
+            return 0;
+        }
+        if (n == 2) {
+            return 1;
+        }
         long i = 2;
-        long m = n / 2;
-        while (i < m) {
+        while (i < n) {
             if (n % i == 0) {
                 return 0;
             }
